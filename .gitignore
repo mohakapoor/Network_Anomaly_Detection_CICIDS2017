@@ -30,7 +30,6 @@ Thumbs.db
 
 # Project specific
 raw/
-final_df/
 train_final.parquet
 test_final.parquet
 
