@@ -29,7 +29,10 @@ Thumbs.db
 
 # Project specific
 raw/
+final/
+train.parquet
 train_final.parquet
+test.parquet
 test_final.parquet
 
 # Logs
