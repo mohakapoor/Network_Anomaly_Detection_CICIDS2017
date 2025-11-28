@@ -30,6 +30,7 @@ Thumbs.db
 # Project specific
 raw/
 final/
+transferred/
 train.parquet
 train_final.parquet
 test.parquet

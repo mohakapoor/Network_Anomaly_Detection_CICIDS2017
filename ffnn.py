@@ -17,13 +17,13 @@ from sklearn.metrics import classification_report, accuracy_score, f1_score
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# -------------------------
-# Settings (tweak)
-# -------------------------
+
 TRAIN_PATH = Path("final/train_mc.parquet")
 TEST_PATH  = Path("final/test_mc.parquet")
-OUT_DIR    = Path("models")
+OUT_DIR    = Path("models/ffnn")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 MODEL_OUT  = OUT_DIR / "ffnn_multiclass.pt"
 
@@ -31,16 +31,13 @@ SEED = 42
 BATCH_SIZE = 256
 LR = 1e-3
 EPOCHS = 100
-VALID_RATIO = 0.1        # fraction of train used for validation
+VALID_RATIO = 0.1        
 USE_GPU = torch.cuda.is_available()
 DEVICE = torch.device("cuda" if USE_GPU else "cpu")
-PATIENCE = 8             # set None to disable early stopping
+PATIENCE = 8           
 DROPOUT = 0.2
-NUM_WORKERS = 4          # set to 0 if you get issues on your machine
+NUM_WORKERS = 4          
 
-# -------------------------
-# Reproducibility
-# -------------------------
 def set_seed(s=SEED):
     random.seed(s)
     np.random.seed(s)
@@ -50,16 +47,14 @@ def set_seed(s=SEED):
 
 set_seed()
 
-# -------------------------
-# Load data (assumes processed: scaled + PCA applied)
-# -------------------------
+
 train_df = pd.read_parquet(TRAIN_PATH)
 test_df  = pd.read_parquet(TEST_PATH)
 
 X = train_df.drop(columns=["Attack"])
 y = train_df["Attack"].astype(int)
 
-X_test = test_df.drop(columns=["Attack"])
+X_test = test_df.drop(columns=["Attack"])   
 y_test = test_df["Attack"].astype(int)
 
 # -------------------------
@@ -128,13 +123,7 @@ class FFNN(nn.Module):
 
 model = FFNN(NUM_FEATURES).to(DEVICE)
 
-# -------------------------
-# Loss, optimizer, scheduler
-# -------------------------
-# If classes are imbalanced, optionally use class weights:
-# counts = y_tr.value_counts().sort_index().values
-# weights = torch.tensor(1.0 / counts, dtype=torch.float32).to(DEVICE)
-# criterion = nn.CrossEntropyLoss(weight=weights)
+
 
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-5)
@@ -188,14 +177,26 @@ def evaluate(loader):
     all_targets = np.concatenate(all_targets)
     return loss / total, correct / total, all_preds, all_targets
 
+
+history = {
+    'train_loss': [],
+    'val_loss': [],
+    'train_acc': [],
+    'val_acc': []
+}
 best_val_f1 = 0.0
 epochs_no_improve = 0
 
 for epoch in range(1, EPOCHS + 1):
     train_loss, train_acc = train_one_epoch()
     val_res = evaluate(val_loader)
-    _, val_acc, val_preds, val_targets = val_res
+    val_loss, val_acc, val_preds, val_targets = val_res
     val_f1 = f1_score(val_targets, val_preds, average="macro")
+
+    history['train_loss'].append(train_loss)
+    history['val_loss'].append(val_loss)
+    history['train_acc'].append(train_acc)
+    history['val_acc'].append(val_acc)
 
     scheduler.step(val_f1)
 
@@ -228,3 +229,146 @@ print(classification_report(test_targets, test_preds))
 # save final model
 torch.save(model.state_dict(), MODEL_OUT)
 print("Saved model to:", MODEL_OUT)
+
+# Get predictions for the training set
+_, _, train_preds, train_targets = evaluate(train_loader)
+
+print("\n" + "="*50)
+print("CLASSIFICATION REPORT (TRAIN SET)")
+print("="*50)
+train_report_dict = classification_report(train_targets, train_preds, output_dict=True)
+train_classification_report = classification_report(train_targets, train_preds)
+print(train_classification_report)
+
+print("\n" + "="*50)
+print("CLASSIFICATION REPORT (TEST SET)")
+print("="*50)
+test_report_dict = classification_report(test_targets, test_preds, output_dict=True)
+test_classification_report = classification_report(test_targets, test_preds)
+print(test_classification_report)
+
+report_content = (
+        "#" * 50 + "\n"
+        "CLASSIFICATION REPORT (TRAIN SET)\n"
+        "#" * 50 + "\n"
+        f"{train_classification_report}\n\n"
+        
+        "#" * 50 + "\n"
+        "CLASSIFICATION REPORT (TEST SET)\n"
+        "#" * 50 + "\n"
+        f"{test_classification_report}\n"
+    )
+
+REPORT_OUT_PATH = OUT_DIR / "classification_reports.txt"
+with open(REPORT_OUT_PATH, 'w') as f:
+        f.write(report_content)
+    
+print(f"\nSuccessfully dumped classification reports to: {REPORT_OUT_PATH}")
+
+
+
+
+
+def plot_classification_report(y_true, y_pred, title,out_dir):
+    """Plot classification report heatmap with support shown as plain numbers per row."""
+    
+    report_dict = classification_report(y_true, y_pred, output_dict=True, zero_division=0)
+    df = pd.DataFrame(report_dict).transpose()
+
+    # Extract support
+    support = df['support'].fillna(0).astype(int)
+
+    # Drop summary rows
+    drop_rows = ['accuracy', 'macro avg', 'weighted avg', 'micro avg']
+    df = df.drop(drop_rows, errors='ignore')
+
+    # Keep only metric columns
+    df_metrics = df.drop(columns=['support'], errors='ignore').astype(float)
+
+    plt.figure(figsize=(8, 4))
+    ax = sns.heatmap(
+        df_metrics,
+        annot=True,
+        cmap="YlGnBu",
+        fmt=".3f",
+        linewidths=.5,
+        linecolor='black',
+        cbar=True
+    )
+
+    # Push the figure content slightly left so we have space on right
+    plt.subplots_adjust(right=0.88)
+
+    # Place support numbers farther right
+    for y, cls in enumerate(df_metrics.index):
+        sup_val = support.loc[cls]
+        ax.text(
+            df_metrics.shape[1] + 0.6,   # shifted right
+            y + 0.5,
+            str(sup_val),
+            va='center',
+            ha='left',
+            fontsize=10,
+            color='black'
+        )
+
+    # Support column header
+    ax.text(
+        df_metrics.shape[1] + 0.6,
+        -0.2,
+        "support",
+        va='bottom',
+        ha='left',
+        fontsize=10,
+        color='black',
+        fontweight='bold'
+    )
+
+    plt.title(f"Classification Report Heatmap ({title})")
+    plt.ylabel("Class")
+    plt.xlabel("Metrics")
+    plt.tight_layout()
+
+    # Save the plot
+    out_path = out_dir / f"classification_report_{title.lower().replace(' ', '_')}.png"
+    plt.savefig(out_path)
+    print(f"Saved {title} plot to: {out_path}")
+    plt.show()
+
+
+
+
+## 2. Loss Plot
+
+def plot_loss(history):
+    """Plots the training and validation loss across epochs."""
+    plt.figure(figsize=(10, 6))
+    
+    # Use min(len) in case of early stopping
+    epochs_ran = len(history['train_loss'])
+    epochs_range = range(1, epochs_ran + 1)
+    
+    plt.plot(epochs_range, history['train_loss'], label='Training Loss', marker='o', linestyle='--')
+    plt.plot(epochs_range, history['val_loss'], label='Validation Loss', marker='o')
+    
+    plt.title('Training and Validation Loss Across Epochs')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss (CrossEntropy)')
+    plt.xticks(epochs_range)
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+    # Save the plot
+    plt.savefig(OUT_DIR / "loss_plot.png")
+
+
+print("\n" + "="*50)
+print("GENERATING PLOTS AND SAVING TO 'models/'")
+print("="*50)
+
+# Execute the plotting functions
+plot_loss(history)
+plot_classification_report(train_targets,train_preds, 'Train Set - FFNN Model',OUT_DIR)
+plot_classification_report(test_targets,test_preds, 'Test Set - FFNN Model',OUT_DIR)
+

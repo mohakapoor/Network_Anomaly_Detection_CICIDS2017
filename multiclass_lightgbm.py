@@ -9,7 +9,8 @@ Toggle USE_RANDOM to False to run full GridSearch (may be very slow).
 
 import warnings
 from pathlib import Path
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 import joblib
 import numpy as np
 import pandas as pd
@@ -25,7 +26,7 @@ warnings.filterwarnings("ignore")
 # ----------------------------
 TRAIN_PATH = Path("final/train_mc.parquet")
 TEST_PATH = Path("final/test_mc.parquet")
-OUT_DIR = Path("models")
+OUT_DIR = Path("models/lightgbm")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 OUT_FILE = OUT_DIR / "multiclass_lightgbm.joblib"
 
@@ -123,10 +124,117 @@ test_f1 = f1_score(y_test, y_pred, average="weighted")
 print(f"\nTest Accuracy: {test_acc:.4f}")
 print(f"Test F1-weighted: {test_f1:.4f}\n")
 print("Classification report (test):")
-print(classification_report(y_test, y_pred))
+test_cr = classification_report(y_test, y_pred)
+print(test_cr)
 
 
 print("Classification report (train):")
-print(classification_report(y_train, y_pred_train))
+train_cr = classification_report(y_train, y_pred_train)
+print(train_cr)
 
-print("Done.")
+report_content = (
+        "#" * 50 + "\n"
+        "CLASSIFICATION REPORT (TRAIN SET)\n"
+        "#" * 50 + "\n"
+        f"{train_cr}\n\n"
+        
+        "#" * 50 + "\n"
+        "CLASSIFICATION REPORT (TEST SET)\n"
+        "#" * 50 + "\n"
+        f"{test_cr}\n"
+    )
+REPORT_OUT_PATH = OUT_DIR / "classification_reports.txt"
+with open(REPORT_OUT_PATH, 'w') as f:
+        f.write(report_content)
+    
+print(f"\nSuccessfully dumped classification reports to: {REPORT_OUT_PATH}")
+
+
+def plot_classification_report(y_true, y_pred, title,out_dir):
+    """Plot classification report heatmap with support shown as plain numbers per row."""
+    
+    report_dict = classification_report(y_true, y_pred, output_dict=True, zero_division=0)
+    df = pd.DataFrame(report_dict).transpose()
+
+    # Extract support
+    support = df['support'].fillna(0).astype(int)
+
+    # Drop summary rows
+    drop_rows = ['accuracy', 'macro avg', 'weighted avg', 'micro avg']
+    df = df.drop(drop_rows, errors='ignore')
+
+    # Keep only metric columns
+    df_metrics = df.drop(columns=['support'], errors='ignore').astype(float)
+
+    plt.figure(figsize=(8, 4))
+    ax = sns.heatmap(
+        df_metrics,
+        annot=True,
+        cmap="YlGnBu",
+        fmt=".3f",
+        linewidths=.5,
+        linecolor='black',
+        cbar=True
+    )
+
+    # Push the figure content slightly left so we have space on right
+    plt.subplots_adjust(right=0.88)
+
+    # Place support numbers farther right
+    for y, cls in enumerate(df_metrics.index):
+        sup_val = support.loc[cls]
+        ax.text(
+            df_metrics.shape[1] + 0.6,   # shifted right
+            y + 0.5,
+            str(sup_val),
+            va='center',
+            ha='left',
+            fontsize=10,
+            color='black'
+        )
+
+    # Support column header
+    ax.text(
+        df_metrics.shape[1] + 0.6,
+        -0.2,
+        "support",
+        va='bottom',
+        ha='left',
+        fontsize=10,
+        color='black',
+        fontweight='bold'
+    )
+
+    plt.title(f"Classification Report Heatmap ({title})")
+    plt.ylabel("Class")
+    plt.xlabel("Metrics")
+    plt.tight_layout()
+
+    # Save the plot
+    out_path = out_dir / f"classification_report_{title.lower().replace(' ', '_')}.png"
+    plt.savefig(out_path)
+    print(f"Saved {title} plot to: {out_path}")
+    plt.show()
+
+
+
+
+print("\n" + "="*50)
+print("GENERATING CLASSIFICATION REPORT PLOTS")
+print("="*50)
+
+# Plot 1: Train Set Classification Report
+plot_classification_report(
+    y_train, 
+    y_pred_train, 
+    'Train Set - Lightgbm', 
+    OUT_DIR
+)
+
+# Plot 2: Test Set Classification Report
+plot_classification_report(
+    y_test, 
+    y_pred, 
+    'Test Set - Lightgbm', 
+    OUT_DIR
+)
