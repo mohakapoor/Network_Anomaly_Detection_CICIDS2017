@@ -1,27 +1,2 @@
 project_name: Network Anomaly Detection
 random_seed: 42
-data_paths:
-  - 'final_df\train_df_preprocessed.parquet'
-  - 'final_df\test_df_preprocessed.parquet'
-feature_engineering:
-  selected_features:
-  - Init_Win_bytes_forward
-  - ' Init_Win_bytes_backward'
-  - ' Flow IAT Min'
-  - ' Fwd IAT Min'
-  - ' Flow Duration'
-  - ' Bwd IAT Min'
-  - Total Length of Fwd Packets
-  - Bwd Packet Length Max
-  - Flow Bytes/s
-  - ' Fwd Packet Length Max'
-  - ' Fwd Packet Length Mean'
-  - ' Bwd Packets/s'
-  - ' Total Fwd Packets'
-  - ' Flow IAT Std'
-  - ' min_seg_size_forward'
-  - ' Fwd IAT Mean'
-  - ' Flow Packets/s'
-  - Active Mean
-  - ' Flow IAT Mean'
-  - Bwd IAT Total
