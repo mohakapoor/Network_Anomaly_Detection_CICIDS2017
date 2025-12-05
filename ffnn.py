@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-ffnn_tabular_processed.py
-Feed-forward NN for multiclass tabular data when your features are already scaled/PCA'd.
-"""
-
 import os
 import random
 from pathlib import Path
@@ -57,10 +51,9 @@ y = train_df["Attack"].astype(int)
 X_test = test_df.drop(columns=["Attack"])   
 y_test = test_df["Attack"].astype(int)
 
-# -------------------------
+
 # Train/validation split
-# -------------------------
-# If your training split is temporal, replace this with a time-based split.
+
 X_tr, X_val, y_tr, y_val = train_test_split(
     X, y, test_size=VALID_RATIO, stratify=y, random_state=SEED
 )
@@ -73,9 +66,7 @@ X_test_np = X_test.values.astype(np.float32)
 NUM_FEATURES = X_tr_np.shape[1]
 NUM_CLASSES = int(y.nunique())
 
-# -------------------------
 # PyTorch Dataset
-# -------------------------
 class TabularDataset(Dataset):
     def __init__(self, X, y):
         self.X = torch.tensor(X, dtype=torch.float32)
@@ -98,9 +89,7 @@ val_loader   = DataLoader(val_ds,   batch_size=BATCH_SIZE, shuffle=False,
 test_loader  = DataLoader(test_ds,  batch_size=BATCH_SIZE, shuffle=False,
                           num_workers=NUM_WORKERS, pin_memory=True)
 
-# -------------------------
 # Model
-# -------------------------
 class FFNN(nn.Module):
     def __init__(self, in_dim, hidden1=128, hidden2=64, num_classes=NUM_CLASSES, dropout=DROPOUT):
         super().__init__()
@@ -129,9 +118,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-5)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="max", factor=0.5, patience=3)
 
-# -------------------------
 # Training loop
-# -------------------------
 def train_one_epoch():
     model.train()
     running_loss = 0.0
@@ -218,9 +205,7 @@ for epoch in range(1, EPOCHS + 1):
 if PATIENCE is not None and Path(MODEL_OUT).exists():
     model.load_state_dict(torch.load(MODEL_OUT))
 
-# -------------------------
 # Final eval on test set
-# -------------------------
 test_loss, test_acc, test_preds, test_targets = evaluate(test_loader)
 print(f"\nTest acc: {test_acc:.4f}  |  Test f1_macro: {f1_score(test_targets, test_preds, average='macro'):.4f}")
 print("\nClassification report (test):")
@@ -295,15 +280,12 @@ def plot_classification_report(y_true, y_pred, title,out_dir):
         linecolor='black',
         cbar=True
     )
-
-    # Push the figure content slightly left so we have space on right
     plt.subplots_adjust(right=0.88)
 
-    # Place support numbers farther right
     for y, cls in enumerate(df_metrics.index):
         sup_val = support.loc[cls]
         ax.text(
-            df_metrics.shape[1] + 0.6,   # shifted right
+            df_metrics.shape[1] + 0.6,  
             y + 0.5,
             str(sup_val),
             va='center',
@@ -312,7 +294,7 @@ def plot_classification_report(y_true, y_pred, title,out_dir):
             color='black'
         )
 
-    # Support column header
+    
     ax.text(
         df_metrics.shape[1] + 0.6,
         -0.2,
@@ -344,7 +326,7 @@ def plot_loss(history):
     """Plots the training and validation loss across epochs."""
     plt.figure(figsize=(10, 6))
     
-    # Use min(len) in case of early stopping
+
     epochs_ran = len(history['train_loss'])
     epochs_range = range(1, epochs_ran + 1)
     
@@ -367,7 +349,6 @@ print("\n" + "="*50)
 print("GENERATING PLOTS AND SAVING TO 'models/'")
 print("="*50)
 
-# Execute the plotting functions
 plot_loss(history)
 plot_classification_report(train_targets,train_preds, 'Train Set - FFNN Model',OUT_DIR)
 plot_classification_report(test_targets,test_preds, 'Test Set - FFNN Model',OUT_DIR)
