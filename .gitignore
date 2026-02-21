@@ -37,5 +37,8 @@ test.parquet
 test_final.parquet
 new_data_train.parquet
 new_data_test.parquet
+test.ipynb
+
+
 # Logs
 *.log
