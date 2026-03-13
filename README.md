@@ -1,6 +1,24 @@
 # Network Anomaly Detection — CICIDS2017
 
-A machine learning pipeline for detecting network intrusions and cyber attacks using the **CICIDS2017** dataset. Implements both **supervised** (multiclass classification) and **unsupervised** (autoencoder-based anomaly detection) approaches.
+The **detection engine** of a Network Intrusion Detection System (IDS), built using the **CICIDS2017** dataset. Implements both **signature-based** (supervised classification) and **anomaly-based** (unsupervised autoencoder) detection — the same two-pronged approach used by modern IDS/IPS platforms like Snort, Suricata, and Darktrace.
+
+```
+┌──────────────────────── Intrusion Detection System ────────────────────────┐
+│                                                                           │
+│   Data Capture          Detection Engine           Response & Alerting    │
+│   ┌──────────┐          ┌──────────────┐           ┌─────────────┐        │
+│   │ Sniffing │    →     │ This Project │     →     │  Logging    │        │
+│   │ Flow     │          │              │           │  Blocking   │        │
+│   │ Export   │          │ • Supervised │           │  Dashboard  │        │
+│   │ Parsing  │          │ • Anomaly    │           │  SIEM       │        │
+│   └──────────┘          └──────────────┘           └─────────────┘        │
+│                                                                           │
+│   (CICIDS2017 provides                                                    │
+│    pre-extracted flows)                                                    │
+└───────────────────────────────────────────────────────────────────────────┘
+```
+
+**Signature-based detection** (supervised models) identifies known attack patterns with 97-99% accuracy. **Anomaly-based detection** (autoencoder) catches novel/zero-day threats by learning what "normal" traffic looks like and flagging deviations — achieving 89% attack recall on unseen attack types without any labeled attack data.
 
 ## Dataset
 
@@ -22,17 +40,22 @@ A machine learning pipeline for detecting network intrusions and cyber attacks u
 │   └── minmaxscaler.joblib           #   MinMaxScaler (autoencoder)
 ├── models/                           # Trained models & evaluation outputs
 │   ├── lightgbm/                     #   LightGBM classification reports & plots
+│   ├── xgboost/                      #   XGBoost classification reports & plots
 │   ├── ffnn/                         #   FFNN classification reports & plots
+│   ├── autoencoder/                  #   Autoencoder reports, ROC curve, plots
 │   ├── binary_svm/                   #   SVM classification reports
 │   └── logistic_regression/          #   Logistic Regression reports
 ├── final/                            # Final preprocessed parquet files
 ├── split.ipynb                       # Stage 1: Data splitting
 ├── cleaning.ipynb                    # Stage 2: Data cleaning & EDA
 ├── preprocessing.ipynb               # Stage 3: Feature engineering & scaling
-├── multiclass_lightgbm.py            # Multiclass LightGBM training
-├── ffnn.py                           # Feed-Forward Neural Network training
+├── multiclass_lightgbm.py            # Signature-based: LightGBM (leaf-wise)
+├── multiclass_xgboost.ipynb          # Signature-based: XGBoost (level-wise)
+├── ffnn.py                           # Signature-based: Feed-Forward Neural Network
+├── autoencoder.py                    # Anomaly-based: Denoising Autoencoder
 ├── binary_svm.ipynb                  # Binary SVM classification (cuML GPU)
 ├── binary_logistic.ipynb             # Binary Logistic Regression (cuML GPU)
+├── project_details.md                # Detailed project documentation & results
 ├── utils.py                          # Helper functions (NaN/Inf handling)
 ├── config.yaml                       # Project configuration (seed=42)
 └── requirements.txt                  # Python dependencies
@@ -85,6 +108,18 @@ A machine learning pipeline for detecting network intrusions and cyber attacks u
 - cuML GPU-accelerated Logistic Regression with GridSearchCV
 - Pipeline: StandardScaler → Logistic Regression
 - **Test Accuracy: ~96.7%**
+### Multiclass XGBoost (`multiclass_xgboost.ipynb`)
+- XGBoost multiclass classifier using **level-wise** tree growth (compared against LightGBM's leaf-wise)
+- RandomizedSearchCV hyperparameter tuning with balanced sample weights
+- **Test Accuracy: ~97%** | **Test F1 (weighted): ~98%**
+
+### Denoising Autoencoder (`autoencoder.py`)
+- Unsupervised anomaly detection — trained on **benign-only** traffic, detects novel attacks via high reconstruction error
+- Denoising autoencoder: Encoder (69→128→64→32) / Decoder (32→64→128→69) with Sigmoid output
+- Combined error metric: 0.5 × MSE + 0.5 × Max per-feature error
+- **ROC AUC: 0.7801** — measures separation quality across all thresholds
+- F1-optimal threshold catches **89% of all attacks** including unseen types (DDoS 83.1%, PortScan 96.6%, Bot 73.5%)
+- See [project_details.md](project_details.md) for full analysis and threshold comparison
 
 ## Requirements
 
@@ -93,6 +128,7 @@ pandas
 numpy
 scikit-learn
 lightgbm
+xgboost
 matplotlib
 seaborn
 joblib
@@ -112,32 +148,19 @@ cuml (optional, for GPU-accelerated SVM/Logistic Regression)
    python multiclass_lightgbm.py
    python ffnn.py
    ```
-4. Or run binary classifiers: `binary_svm.ipynb`, `binary_logistic.ipynb`
-5. Check `models/` for evaluation outputs
+4. Run XGBoost notebook: `multiclass_xgboost.ipynb`
+5. Run binary classifiers: `binary_svm.ipynb`, `binary_logistic.ipynb`
+6. Train autoencoder:
+   ```bash
+   python autoencoder.py
+   ```
+7. Check `models/` for evaluation outputs and plots
 
 ## What's Next
 
-### Supervised — XGBoost Multiclass
-- Train an **XGBoost** multiclass classifier to compare against LightGBM
-- LightGBM uses **leaf-wise** tree growth while XGBoost uses **level-wise** growth — comparing both on the same data will show how these different gradient boosting strategies perform on network intrusion data
-
-### Unsupervised — Autoencoder Anomaly Detection
-An **unsupervised autoencoder** for semi-supervised anomaly detection:
-
-- **Objective**: Train on benign-only traffic to learn the "normal" distribution, then detect anomalies via high reconstruction error — enabling detection of **novel/zero-day attacks** without labeled attack data
-- **Architecture**: Encoder (69 → 128 → 64 → 32) / Decoder (32 → 64 → 128 → 69) with BatchNorm, ReLU, Dropout, and Sigmoid output
-- **Scaling**: MinMaxScaler (already preprocessed) — bounds features to [0, 1] for the autoencoder
-- **Threshold**: Reconstruction error threshold tuned on a benign validation set (`mean + k × std`)
-- **Evaluation**: Per-attack-type recall, with special focus on unseen Friday attacks (DDoS, PortScan, Bot)
-- **Data**: Training on `df[df['Attack'] == 0]` from the MinMaxScaled training set
-
-### Unsupervised — Isolation Forest
-- Train an **Isolation Forest** model as a comparison against the autoencoder
-- Isolation Forest detects anomalies by isolating observations — anomalous points require fewer random splits to isolate, making it a fundamentally different approach from reconstruction-error-based detection
-
-### Hybrid Approach (Future)
-Combine the best unsupervised model (for novel anomaly detection) with supervised models (for known attack classification) into a two-stage pipeline.
+- [ ] **Isolation Forest** — unsupervised anomaly detection for comparison with the autoencoder (different approach: isolation-based vs reconstruction-error-based)
+- [ ] **Hybrid Pipeline** — combine the best unsupervised model (novel attack detection) with supervised models (known attack classification) in a two-stage system
 
 ## License
 
-For educational and research purposes.
+For educational and research purposes.
