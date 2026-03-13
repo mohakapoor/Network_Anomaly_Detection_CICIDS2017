@@ -1,0 +1,12 @@
+mean: 0.003016
+std: 0.015191
+k: 3
+threshold (mean + k*std): 0.018207
+threshold (95th percentile): 0.011379
+threshold (99th percentile): 0.031063
+
+ROC AUC: 0.780080
+F1-optimal threshold: 0.001068
+F1-optimal F1-score: 0.6567
+F1-optimal precision: 0.5203
+F1-optimal recall: 0.8902

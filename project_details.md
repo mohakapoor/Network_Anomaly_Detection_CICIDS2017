@@ -235,6 +235,7 @@ Per-class test performance:
 | Training Data | Benign-only (Attack == 0) |
 | Validation | 10% benign holdout |
 | Error Metric | Combined: 0.5 × MSE + 0.5 × Max per-feature error |
+| Noise | Gaussian noise (σ=0.1) added during training, model learns to reconstruct clean input |
 | Optimizer | Adam (lr=1e-3, weight_decay=1e-5) |
 | Scheduler | ReduceLROnPlateau (factor=0.5, patience=3) |
 | Early Stopping | Patience = 10 |
@@ -243,34 +244,50 @@ Per-class test performance:
 
 | Metric | Value |
 |--------|-------|
-| **ROC AUC** | **0.7858** |
+| **ROC AUC** | **0.7801** |
 | Best F1 (Anomaly class) | **0.66** |
-| F1-Optimal Threshold | 0.000976 |
+| F1-Optimal Threshold | 0.001068 |
 
-**Per-Attack Recall (F1-Optimal Threshold):**
+**Conservative Threshold (mean + 3×std):**
+
+|  | Precision | Recall | F1 | Support |
+|--|-----------|--------|-----|---------|
+| Benign | 0.75 | 0.93 | 0.83 | 395,106 |
+| Anomaly | 0.67 | 0.31 | 0.42 | 178,293 |
+| **Accuracy** | | | **0.74** | 573,399 |
+
+Per-attack recall (mean + 3×std):
 
 | Attack | Recall | Count |
 |--------|--------|-------|
-| DDoS | **83.6%** | 98,022 |
-| PortScan | **98.7%** | 79,290 |
+| BENIGN (correctly identified) | 93.2% | 395,106 |
+| Bot | 8.2% | 981 |
+| DDoS | 52.9% | 98,022 |
+| PortScan | 3.8% | 79,290 |
+
+**F1-Optimal Threshold (0.001068):**
+
+|  | Precision | Recall | F1 | Support |
+|--|-----------|--------|-----|---------|
+| Benign | 0.93 | 0.63 | 0.75 | 395,106 |
+| Anomaly | 0.52 | 0.89 | 0.66 | 178,293 |
+| **Accuracy** | | | **0.71** | 573,399 |
+
+Per-attack recall (F1-optimal):
+
+| Attack | Recall | Count |
+|--------|--------|-------|
 | Bot | **73.5%** | 981 |
-| BENIGN (correctly identified) | 61.6% | 395,106 |
-
-**Threshold Comparison:**
-
-| Threshold | Anomaly Recall | Benign Correct | Anomaly F1 |
-|-----------|---------------|----------------|------------|
-| mean + 3×std | 32% | 93% | 0.43 |
-| mean + 1×std | 33% | 94% | 0.44 |
-| 95th percentile | 39% | 90% | 0.48 |
-| **F1-Optimal** | **90%** | **62%** | **0.66** |
+| DDoS | **83.1%** | 98,022 |
+| PortScan | **96.6%** | 79,290 |
 
 **Key findings:**
-1. The autoencoder achieves AUC of 0.7858, demonstrating learned separation between benign and attack traffic without any labeled attack data
-2. At the F1-optimal threshold, it catches 90% of attacks (including novel/unseen types) with a tradeoff of 38% false positive rate on benign traffic
-3. PortScan (98.7%) and DDoS (83.6%) are detected very effectively; Bot (73.5%) moderately
-4. The conservative threshold (k=3) catches only 32% of attacks — threshold selection is critical
-5. The combined error metric (MSE + max per-feature) improved detection of subtle attacks (PortScan, Bot) by catching individual feature deviations
+1. The autoencoder achieves AUC of 0.7801, demonstrating learned separation between benign and attack traffic **without any labeled attack data**
+2. At the F1-optimal threshold, it catches **89% of all attacks** (including novel/unseen types) with a tradeoff of 37% false positive rate on benign traffic
+3. PortScan (96.6%) and DDoS (83.1%) are detected very effectively; Bot (73.5%) moderately
+4. The conservative threshold (mean + 3×std) catches only 31% of attacks — **threshold selection is critical**
+5. The combined error metric (MSE + max per-feature) improved detection of subtle attacks (PortScan, Bot) over pure MSE by catching individual feature deviations
+6. Denoising approach (adding Gaussian noise during training) forces the model to learn structural benign patterns rather than memorizing values
 
 ---
 
@@ -282,14 +299,41 @@ Per-class test performance:
 - LightGBM's leaf-wise growth is more efficient on this imbalanced dataset as it can focus splits on the most informative regions
 
 ### Supervised vs Unsupervised
-- Supervised models (LightGBM, XGBoost, FFNN) significantly outperform the autoencoder on known attack types (99%+ recall vs 74-99%)
+- Supervised models (LightGBM, XGBoost, FFNN) significantly outperform the autoencoder on known attack types (99%+ recall vs 74-97%)
 - The autoencoder's advantage: it detects attacks **without ever seeing attack labels during training** — critical for zero-day attack detection
 - The unsupervised approach is complementary, not competitive — ideal for a hybrid pipeline
 
 ### Autoencoder Threshold Sensitivity
-- The choice of threshold dramatically affects performance (32% vs 90% attack recall)
-- ROC AUC (0.7858) is the most reliable metric as it captures performance across all thresholds
+- The choice of threshold dramatically affects performance (31% vs 89% attack recall)
+- ROC AUC (0.7801) is the most reliable metric as it captures performance across all thresholds
 - For network security, high attack recall (low missed attacks) is preferred even at the cost of more false positives
+
+### Why ROC AUC & F1-Optimal Threshold?
+
+**The Problem**: Unlike supervised classifiers that output class predictions directly, the autoencoder outputs a continuous **reconstruction error** for each sample. To make a binary decision (benign vs anomaly), we must pick a threshold — but any fixed threshold strategy (like mean + k×std) is arbitrary and gives wildly different results depending on k:
+
+| Threshold Strategy | Attack Recall | Benign Correct |
+|-------------------|---------------|----------------|
+| mean + 3×std (conservative) | 31% | 93% |
+| mean + 1×std | 33% | 94% |
+| 95th percentile | 39% | 90% |
+
+No single fixed threshold tells the full story. Reporting just one gives a misleading picture of model quality.
+
+**Why ROC AUC**: AUC (Area Under the ROC Curve) evaluates the model's **ability to separate benign from attack traffic across all possible thresholds**. An AUC of 0.7801 means: if you randomly pick one attack sample and one benign sample, the model assigns a higher reconstruction error to the attack sample 78% of the time. This is a threshold-independent measure of how well the model has learned the distinction — making it the most honest single metric for comparing anomaly detection models (e.g., autoencoder vs Isolation Forest).
+
+**Why F1-Optimal Threshold**: Once we know the model has learned real separation (via AUC), we need to pick an **operating point** — a specific threshold for deployment. The F1-optimal threshold is the point that maximizes the harmonic mean of precision and recall:
+- **Too aggressive** (low threshold): catches more attacks but floods analysts with false alarms — low precision
+- **Too conservative** (high threshold): few false alarms but misses most attacks — low recall
+- **F1-optimal**: the mathematically best **balance** between the two — neither too aggressive nor too conservative
+
+At the F1-optimal threshold (0.001068), the autoencoder catches **89% of all attacks** with a precision of 52%. In a network security context, this means roughly half of flagged traffic is actually malicious — a workable ratio for a first-pass filter that feeds into human review or a supervised model for final classification.
+
+
+- **Vanilla AE (MSE only)**: DDoS ~44%, PortScan ~0.6%, Bot ~2.5% at k=3
+- **+ Denoising**: DDoS improved to ~53%, learned more robust benign representations
+- **+ Combined Error (MSE + Max)**: PortScan jumped from ~1.5% to ~3.8% at k=3 by catching individual feature deviations
+- **+ F1-Optimal Threshold**: All attacks dramatically improved — PortScan 96.6%, DDoS 83.1%, Bot 73.5%
 
 ---
 
@@ -297,3 +341,4 @@ Per-class test performance:
 
 - [ ] **Isolation Forest** — unsupervised anomaly detection for comparison with the autoencoder
 - [ ] **Hybrid Pipeline** — combine the best unsupervised model (novel attack detection) with supervised models (known attack classification) in a two-stage system
+

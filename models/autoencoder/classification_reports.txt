@@ -1,0 +1,40 @@
+Binary Classification Report (Benign vs Anomaly) (mean + 3*std Threshold):
+              precision    recall  f1-score   support
+
+      Benign       0.75      0.93      0.83    395106
+     Anomaly       0.67      0.31      0.42    178293
+
+    accuracy                           0.74    573399
+   macro avg       0.71      0.62      0.63    573399
+weighted avg       0.72      0.74      0.70    573399
+
+Overall Accuracy: 0.7378
+
+Per-Attack-Type Recall:
+----------------------------------------
+  BENIGN          | Correctly identified: 0.9317 | Count: 395106
+  Bot             | Recall: 0.0815 | Count: 981
+  DDoS            | Recall: 0.5285 | Count: 98022
+  PortScan        | Recall: 0.0384 | Count: 79290
+
+
+
+
+Binary Classification Report (F1-Optimal Threshold: 0.001068)
+==================================================
+              precision    recall  f1-score   support
+
+      Benign       0.93      0.63      0.75    395106
+     Anomaly       0.52      0.89      0.66    178293
+
+    accuracy                           0.71    573399
+   macro avg       0.72      0.76      0.70    573399
+weighted avg       0.80      0.71      0.72    573399
+
+ROC AUC: 0.7801
+
+Per-Attack-Type Recall (F1-Optimal Threshold)
+==================================================
+  Bot             | Recall: 0.7350 | Count: 981
+  DDoS            | Recall: 0.8309 | Count: 98022
+  PortScan        | Recall: 0.9655 | Count: 79290
