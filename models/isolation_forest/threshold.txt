@@ -1,0 +1,5 @@
+ROC AUC: 0.715594
+F1-optimal threshold: -0.233762
+F1-optimal F1-score: 0.6322
+F1-optimal precision: 0.4850
+F1-optimal recall: 0.9077

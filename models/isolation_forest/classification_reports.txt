@@ -1,0 +1,19 @@
+Binary Classification Report (F1-Optimal Threshold: -0.233762)
+==================================================
+              precision    recall  f1-score   support
+
+      Benign       0.93      0.57      0.70    395106
+     Anomaly       0.48      0.91      0.63    178293
+
+    accuracy                           0.67    573399
+   macro avg       0.71      0.74      0.67    573399
+weighted avg       0.79      0.67      0.68    573399
+
+ROC AUC: 0.7156
+
+Per-Attack-Type Recall (F1-Optimal Threshold)
+==================================================
+  BENIGN          | Recall: 0.5651 | Count: 395106
+  Bot             | Recall: 0.3925 | Count: 981
+  DDoS            | Recall: 0.8397 | Count: 98022
+  PortScan        | Recall: 0.9928 | Count: 79290
