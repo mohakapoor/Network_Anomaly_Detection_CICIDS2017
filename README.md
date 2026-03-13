@@ -1,6 +1,6 @@
 # Network Anomaly Detection — CICIDS2017
 
-The **detection engine** of a Network Intrusion Detection System (IDS), built using the **CICIDS2017** dataset. Implements both **signature-based** (supervised classification) and **anomaly-based** (unsupervised autoencoder) detection — the same two-pronged approach used by modern IDS/IPS platforms like Snort, Suricata, and Darktrace.
+The **detection engine** of a Network Intrusion Detection System (IDS), built using the **CICIDS2017** dataset. Implements both **signature-based** (supervised classification) and **anomaly-based** (unsupervised autoencoder + Isolation Forest) detection — the same two-pronged approach used by modern IDS/IPS platforms like Snort, Suricata, and Darktrace.
 
 ```
 ┌──────────────────────── Intrusion Detection System ────────────────────────┐
@@ -18,7 +18,7 @@ The **detection engine** of a Network Intrusion Detection System (IDS), built us
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Signature-based detection** (supervised models) identifies known attack patterns with 97-99% accuracy. **Anomaly-based detection** (autoencoder) catches novel/zero-day threats by learning what "normal" traffic looks like and flagging deviations — achieving 89% attack recall on unseen attack types without any labeled attack data.
+**Signature-based detection** (supervised models) identifies known attack patterns with 97-99% accuracy. **Anomaly-based detection** (autoencoder and Isolation Forest) catches novel/zero-day threats by learning what "normal" traffic looks like — the autoencoder achieves AUC 0.7801, outperforming Isolation Forest (AUC 0.7156) as the primary anomaly detector.
 
 ## Dataset
 
@@ -43,6 +43,7 @@ The **detection engine** of a Network Intrusion Detection System (IDS), built us
 │   ├── xgboost/                      #   XGBoost classification reports & plots
 │   ├── ffnn/                         #   FFNN classification reports & plots
 │   ├── autoencoder/                  #   Autoencoder reports, ROC curve, plots
+│   ├── isolation_forest/             #   Isolation Forest reports, ROC curve, plots
 │   ├── binary_svm/                   #   SVM classification reports
 │   └── logistic_regression/          #   Logistic Regression reports
 ├── final/                            # Final preprocessed parquet files
@@ -53,6 +54,7 @@ The **detection engine** of a Network Intrusion Detection System (IDS), built us
 ├── multiclass_xgboost.ipynb          # Signature-based: XGBoost (level-wise)
 ├── ffnn.py                           # Signature-based: Feed-Forward Neural Network
 ├── autoencoder.py                    # Anomaly-based: Denoising Autoencoder
+├── isolation_forest.ipynb            # Anomaly-based: Isolation Forest
 ├── binary_svm.ipynb                  # Binary SVM classification (cuML GPU)
 ├── binary_logistic.ipynb             # Binary Logistic Regression (cuML GPU)
 ├── project_details.md                # Detailed project documentation & results
@@ -113,13 +115,33 @@ The **detection engine** of a Network Intrusion Detection System (IDS), built us
 - RandomizedSearchCV hyperparameter tuning with balanced sample weights
 - **Test Accuracy: ~97%** | **Test F1 (weighted): ~98%**
 
+## Unsupervised Models
+
 ### Denoising Autoencoder (`autoencoder.py`)
 - Unsupervised anomaly detection — trained on **benign-only** traffic, detects novel attacks via high reconstruction error
 - Denoising autoencoder: Encoder (69→128→64→32) / Decoder (32→64→128→69) with Sigmoid output
 - Combined error metric: 0.5 × MSE + 0.5 × Max per-feature error
 - **ROC AUC: 0.7801** — measures separation quality across all thresholds
 - F1-optimal threshold catches **89% of all attacks** including unseen types (DDoS 83.1%, PortScan 96.6%, Bot 73.5%)
-- See [project_details.md](project_details.md) for full analysis and threshold comparison
+
+### Isolation Forest (`isolation_forest.ipynb`)
+- Unsupervised anomaly detection — trained on **benign-only** traffic, detects anomalies by how quickly samples can be isolated via random splits
+- Hyperparameter tuning via manual grid search (48 combos) — best: `max_samples=2048, max_features=1.0, n_estimators=200`
+- **ROC AUC: 0.7156** — below the autoencoder (0.7801)
+- F1-optimal threshold catches **91% of all attacks** (PortScan 99.3%, DDoS 84.0%, Bot 39.3%)
+- Excels at detecting structurally distinct attacks (PortScan) but struggles with subtle ones (Bot)
+
+### Unsupervised Comparison
+
+| Metric | Autoencoder | Isolation Forest |
+|--------|-------------|------------------|
+| **ROC AUC** | **0.7801** | 0.7156 |
+| F1 (Anomaly) | **0.66** | 0.63 |
+| Bot Recall | **73.5%** | 39.3% |
+| DDoS Recall | 83.1% | **84.0%** |
+| PortScan Recall | 96.6% | **99.3%** |
+
+The autoencoder is the preferred anomaly detector due to higher AUC and better detection of subtle attacks. See [project_details.md](project_details.md) for full analysis.
 
 ## Requirements
 
@@ -154,12 +176,13 @@ cuml (optional, for GPU-accelerated SVM/Logistic Regression)
    ```bash
    python autoencoder.py
    ```
-7. Check `models/` for evaluation outputs and plots
+7. Run Isolation Forest notebook: `isolation_forest.ipynb`
+8. Check `models/` for evaluation outputs and plots
 
 ## What's Next
 
-- [ ] **Isolation Forest** — unsupervised anomaly detection for comparison with the autoencoder (different approach: isolation-based vs reconstruction-error-based)
-- [ ] **Hybrid Pipeline** — combine the best unsupervised model (novel attack detection) with supervised models (known attack classification) in a two-stage system
+- [x] **Isolation Forest** — unsupervised anomaly detection for comparison with the autoencoder (AUC 0.7156 vs AE's 0.7801 — AE wins overall)
+- [ ] **Hybrid Pipeline** — combine the autoencoder (best unsupervised model) with LightGBM (best supervised model) in a two-stage detection system
 
 ## License
 
