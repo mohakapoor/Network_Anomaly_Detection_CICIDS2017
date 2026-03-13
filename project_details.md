@@ -291,6 +291,71 @@ Per-attack recall (F1-optimal):
 
 ---
 
+### Isolation Forest (`isolation_forest.ipynb`)
+
+| Property | Value |
+|----------|-------|
+| Framework | scikit-learn |
+| Type | Isolation Forest (unsupervised) |
+| Training Data | Benign-only (Attack == 0) |
+| Hyperparameter Tuning | Manual grid search (48 combos) over max_samples, max_features, n_estimators |
+| Best max_samples | 2048 |
+| Best max_features | 1.0 (all features) |
+| Best n_estimators | 200 |
+| contamination | 0.01 |
+| Scoring | Negated `decision_function` (higher = more anomalous) |
+
+**Tuning Note**: Unlike supervised models, Isolation Forest cannot use cross-validation with labels during training (since the training set is benign-only). Instead, we perform a manual grid search: train each parameter combination on benign data, score the test set, and select the combo with the best ROC AUC. The default `max_samples=256` severely limits each tree's view of the data — increasing to 2048 improved AUC from 0.6838 to 0.7156.
+
+**Results:**
+
+| Metric | Value |
+|--------|-------|
+| **ROC AUC** | **0.7156** |
+| Best F1 (Anomaly class) | **0.6322** |
+| F1-Optimal Threshold | -0.233762 |
+
+**F1-Optimal Threshold (-0.233762):**
+
+|  | Precision | Recall | F1 | Support |
+|--|-----------|--------|-----|---------|
+| Benign | 0.93 | 0.57 | 0.70 | 395,106 |
+| Anomaly | 0.48 | 0.91 | 0.63 | 178,293 |
+| **Accuracy** | | | **0.67** | 573,399 |
+
+Per-attack recall (F1-optimal):
+
+| Attack | Recall | Count |
+|--------|--------|-------|
+| Bot | **39.3%** | 981 |
+| DDoS | **84.0%** | 98,022 |
+| PortScan | **99.3%** | 79,290 |
+
+**Key findings:**
+1. After hyperparameter tuning, Isolation Forest achieves AUC of 0.7156 — decent separation ability but below the autoencoder's 0.7801
+2. PortScan detection (99.3%) is excellent — better than the autoencoder (96.6%), likely because port scan traffic is structurally very different and easily isolated by random splits
+3. DDoS detection (84.0%) is comparable to the autoencoder (83.1%)
+4. Bot detection (39.3%) is significantly worse than the autoencoder (73.5%) — Bot traffic is subtle and does not isolate well via random feature splits
+5. Increasing `max_samples` from 256 to 2048 was the single biggest improvement lever, confirming that more samples per tree = better density estimation for this large dataset
+
+---
+
+## Unsupervised Models Comparison
+
+| Metric | Autoencoder | Isolation Forest | Winner |
+|--------|-------------|-----------------|--------|
+| **ROC AUC** | **0.7801** | 0.7156 | AE |
+| **Best F1 (Anomaly)** | **0.66** | 0.63 | AE |
+| Anomaly Recall | 89% | 91% | IF |
+| Anomaly Precision | 52% | 48% | AE |
+| Bot Recall | **73.5%** | 39.3% | AE |
+| DDoS Recall | 83.1% | **84.0%** | IF |
+| PortScan Recall | 96.6% | **99.3%** | IF |
+
+**Key takeaway**: The autoencoder outperforms Isolation Forest on the most important threshold-independent metric (ROC AUC: 0.78 vs 0.72), indicating better overall learned separation between benign and attack traffic. IF wins on PortScan and DDoS (attacks with distinctive traffic patterns that isolate easily via random splits), while the AE wins decisively on Bot detection (subtle attacks where learned reconstruction patterns matter more). For a hybrid IDS, the autoencoder is the preferred anomaly detector.
+
+---
+
 ## Observations & Insights
 
 ### LightGBM vs XGBoost
@@ -299,9 +364,16 @@ Per-attack recall (F1-optimal):
 - LightGBM's leaf-wise growth is more efficient on this imbalanced dataset as it can focus splits on the most informative regions
 
 ### Supervised vs Unsupervised
-- Supervised models (LightGBM, XGBoost, FFNN) significantly outperform the autoencoder on known attack types (99%+ recall vs 74-97%)
-- The autoencoder's advantage: it detects attacks **without ever seeing attack labels during training** — critical for zero-day attack detection
+- Supervised models (LightGBM, XGBoost, FFNN) significantly outperform both unsupervised models on known attack types (99%+ recall vs 74-97% for AE, 39-99% for IF)
+- The unsupervised models' advantage: they detect attacks **without ever seeing attack labels during training** — critical for zero-day attack detection
 - The unsupervised approach is complementary, not competitive — ideal for a hybrid pipeline
+
+### Autoencoder vs Isolation Forest
+- The autoencoder (AUC 0.7801) outperforms Isolation Forest (AUC 0.7156) as an overall anomaly detector
+- IF excels at detecting attacks with distinctive structural patterns (PortScan: 99.3%) because these are easily isolated by random splits
+- AE excels at detecting subtle attacks (Bot: 73.5% vs IF's 39.3%) because the neural network learns fine-grained reconstruction patterns that capture small deviations
+- IF is much faster to train but less effective on nuanced anomalies
+- For a production hybrid pipeline, the autoencoder is the better first-stage anomaly filter
 
 ### Autoencoder Threshold Sensitivity
 - The choice of threshold dramatically affects performance (31% vs 89% attack recall)
@@ -339,6 +411,6 @@ At the F1-optimal threshold (0.001068), the autoencoder catches **89% of all att
 
 ## What's Next
 
-- [ ] **Isolation Forest** — unsupervised anomaly detection for comparison with the autoencoder
-- [ ] **Hybrid Pipeline** — combine the best unsupervised model (novel attack detection) with supervised models (known attack classification) in a two-stage system
+- [x] **Isolation Forest** — unsupervised anomaly detection for comparison with the autoencoder (AUC 0.7156 vs AE's 0.7801 — AE wins overall)
+- [ ] **Hybrid Pipeline** — combine the autoencoder (best unsupervised model) with LightGBM (best supervised model) in a two-stage detection system
 

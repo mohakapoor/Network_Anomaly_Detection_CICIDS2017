@@ -163,4 +163,4 @@ cuml (optional, for GPU-accelerated SVM/Logistic Regression)
 
 ## License
 
-For educational and research purposes.
+For educational and research purposes.
