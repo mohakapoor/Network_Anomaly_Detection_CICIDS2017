@@ -1,0 +1,1015 @@
+##################################################
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+CLASSIFICATION REPORT (TRAIN SET)
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+              precision    recall  f1-score   support
+
+           0       0.98      0.95      0.97      8000
+           1       0.91      1.00      0.95       974
+           2       0.99      0.99      0.99      7417
+           3       0.99      1.00      0.99      8000
+           4       0.98      0.98      0.98      8000
+           5       0.99      1.00      0.99      8000
+           6       0.95      0.99      0.97      1718
+
+    accuracy                           0.98     42109
+   macro avg       0.97      0.99      0.98     42109
+weighted avg       0.98      0.98      0.98     42109
+
+
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+CLASSIFICATION REPORT (TEST SET)
+#
+              precision    recall  f1-score   support
+
+           0       0.97      0.93      0.95      5000
+           1       0.83      0.98      0.90       981
+           2       0.98      0.99      0.99      2039
+           3       0.99      1.00      0.99      5000
+           4       0.98      0.97      0.97      4871
+           5       1.00      0.99      1.00      5000
+           6       0.90      0.99      0.94       433
+
+    accuracy                           0.97     23324
+   macro avg       0.95      0.98      0.96     23324
+weighted avg       0.98      0.97      0.98     23324
+

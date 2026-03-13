@@ -6,7 +6,8 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import (classification_report, accuracy_score,
+                             roc_curve, roc_auc_score, precision_recall_curve)
 
 import torch
 import torch.nn as nn
@@ -336,17 +337,93 @@ for attack_id in sorted(test_df['Attack'].unique()):
 
     per_attack_results[name] = {'recall': recall, 'count': count}
 
-# Save text report
+
+
+
+# ══════════════════════════════════════════════════════════════
+#  6b. ROC AUC ANALYSIS & OPTIMAL THRESHOLD
+# ══════════════════════════════════════════════════════════════
+print("\n" + "=" * 50)
+print("ROC AUC ANALYSIS")
+print("=" * 50)
+
+# ROC curve and AUC
+fpr, tpr, thresholds_roc = roc_curve(true_labels, test_errors)
+auc_score = roc_auc_score(true_labels, test_errors)
+print(f"\nROC AUC Score: {auc_score:.4f}")
+
+# F1-optimal threshold
+precisions, recalls, thresholds_pr = precision_recall_curve(true_labels, test_errors)
+f1_scores = 2 * (precisions * recalls) / (precisions + recalls + 1e-8)
+best_f1_idx = np.argmax(f1_scores)
+best_f1_threshold = thresholds_pr[best_f1_idx]
+best_f1 = f1_scores[best_f1_idx]
+
+print(f"\nF1-Optimal Threshold: {best_f1_threshold:.6f}")
+print(f"  Precision: {precisions[best_f1_idx]:.4f}")
+print(f"  Recall:    {recalls[best_f1_idx]:.4f}")
+print(f"  F1-Score:  {best_f1:.4f}")
+
+# Recall vs FPR tradeoff table
+print("\nRecall vs False Positive Rate Tradeoff:")
+print("-" * 50)
+threshold_sweep = np.linspace(test_errors.max(), test_errors.min(), 10000)
+for target_recall in [0.5, 0.6, 0.7, 0.8, 0.9]:
+    for t in threshold_sweep:
+        preds_t = (test_errors > t).astype(int)
+        rec = preds_t[true_labels == 1].mean()
+        if rec >= target_recall:
+            fpr_t = preds_t[true_labels == 0].mean()
+            print(f"  Recall {target_recall:.0%} → threshold: {t:.6f}, FPR: {fpr_t:.2%}")
+            break
+    else:
+        print(f"  Recall {target_recall:.0%} → not achievable")
+
+# Re-evaluate with F1-optimal threshold
+print("\n" + "=" * 50)
+print(f"EVALUATION WITH F1-OPTIMAL THRESHOLD ({best_f1_threshold:.6f})")
+print("=" * 50)
+
+predictions_optimal = (test_errors > best_f1_threshold).astype(int)
+report_optimal = classification_report(true_labels, predictions_optimal,
+                                       target_names=["Benign", "Anomaly"],
+                                       zero_division=0)
+print(report_optimal)
+
+per_attack_results_optimal = {}
+print("Per-Attack-Type Recall (F1-Optimal Threshold):")
+print("-" * 40)
+for attack_id in sorted(test_df['Attack'].unique()):
+    mask = y_test == attack_id
+    name = attack_names.get(attack_id, f"Attack_{attack_id}")
+    count = mask.sum()
+    if attack_id == 0:
+        recall_opt = 1 - predictions_optimal[mask].mean()
+        print(f"  {name:15s} | Correctly identified: {recall_opt:.4f} | Count: {count}")
+    else:
+        recall_opt = predictions_optimal[mask].mean()
+        print(f"  {name:15s} | Recall: {recall_opt:.4f} | Count: {count}")
+    per_attack_results_optimal[name] = {'recall': recall_opt, 'count': count}
+
+# Save text report (using F1-optimal threshold)
 with open(OUT_DIR / "classification_reports.txt", "w") as f:
-    f.write("Binary Classification Report (Benign vs Anomaly)\n")
+    f.write(f"Binary Classification Report (F1-Optimal Threshold: {best_f1_threshold:.6f})\n")
     f.write("=" * 50 + "\n")
-    f.write(report + "\n")
-    f.write(f"Overall Accuracy: {accuracy:.4f}\n\n")
-    f.write("Per-Attack-Type Recall\n")
+    f.write(report_optimal + "\n")
+    f.write(f"ROC AUC: {auc_score:.4f}\n\n")
+    f.write("Per-Attack-Type Recall (F1-Optimal Threshold)\n")
     f.write("=" * 50 + "\n")
-    for name, res in per_attack_results.items():
+    for name, res in per_attack_results_optimal.items():
         f.write(f"  {name:15s} | Recall: {res['recall']:.4f} | Count: {res['count']}\n")
 print(f"\nSaved reports to {OUT_DIR / 'classification_reports.txt'}")
+
+# Save AUC and optimal threshold info
+with open(OUT_DIR / "threshold.txt", "a") as f:
+    f.write(f"\nROC AUC: {auc_score:.6f}\n")
+    f.write(f"F1-optimal threshold: {best_f1_threshold:.6f}\n")
+    f.write(f"F1-optimal F1-score: {best_f1:.4f}\n")
+    f.write(f"F1-optimal precision: {precisions[best_f1_idx]:.4f}\n")
+    f.write(f"F1-optimal recall: {recalls[best_f1_idx]:.4f}\n")
 
 
 # ══════════════════════════════════════════════════════════════
@@ -383,8 +460,8 @@ def plot_loss(history):
 
 
 ## Reconstruction Error Distribution
-def plot_error_distribution(test_errors, y_test, threshold):
-    """Plots reconstruction error histograms: benign vs each attack type."""
+def plot_error_distribution(test_errors, y_test, threshold, optimal_threshold):
+    """Plots reconstruction error histograms: benign vs attacks with both thresholds."""
     plt.figure(figsize=(12, 7))
 
     benign_errors = test_errors[y_test == 0]
@@ -393,10 +470,12 @@ def plot_error_distribution(test_errors, y_test, threshold):
     plt.hist(benign_errors, bins=100, alpha=0.6, label='Benign', color='steelblue', density=True)
     plt.hist(attack_errors, bins=100, alpha=0.6, label='Attacks', color='crimson', density=True)
     plt.axvline(threshold, color='black', linestyle='--', linewidth=2,
-                label=f'Threshold ({threshold:.4f})')
+                label=f'Threshold k={THRESHOLD_K} ({threshold:.4f})')
+    plt.axvline(optimal_threshold, color='green', linestyle='--', linewidth=2,
+                label=f'F1-Optimal ({optimal_threshold:.4f})')
 
     plt.title('Reconstruction Error Distribution — Benign vs Attacks')
-    plt.xlabel('Reconstruction Error (MSE)')
+    plt.xlabel('Reconstruction Error')
     plt.ylabel('Density')
     plt.legend()
     plt.grid(True, alpha=0.3)
@@ -435,9 +514,54 @@ def plot_per_attack_recall(per_attack_results):
     plt.close()
 
 
+## ROC Curve
+def plot_roc_curve(fpr, tpr, auc_score):
+    """Plots the ROC curve with AUC score."""
+    plt.figure(figsize=(8, 6))
+    plt.plot(fpr, tpr, color='steelblue', linewidth=2,
+             label=f'Autoencoder (AUC = {auc_score:.4f})')
+    plt.plot([0, 1], [0, 1], 'k--', linewidth=1, label='Random (AUC = 0.5)')
+
+    plt.title('ROC Curve \u2014 Autoencoder Anomaly Detection')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate (Attack Recall)')
+    plt.legend(loc='lower right')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    out_path = OUT_DIR / "roc_curve.png"
+    plt.savefig(out_path)
+    print(f"Saved ROC curve to: {out_path}")
+    plt.close()
+
+
+## Precision-Recall Curve
+def plot_precision_recall_curve(precisions, recalls, best_f1, best_f1_idx):
+    """Plots the Precision-Recall curve with F1-optimal point marked."""
+    plt.figure(figsize=(8, 6))
+    plt.plot(recalls, precisions, color='steelblue', linewidth=2, label='Autoencoder')
+    plt.scatter(recalls[best_f1_idx], precisions[best_f1_idx],
+                color='red', s=100, zorder=5,
+                label=f'F1-Optimal (F1={best_f1:.4f})')
+
+    plt.title('Precision-Recall Curve \u2014 Autoencoder Anomaly Detection')
+    plt.xlabel('Recall (Attack Detection Rate)')
+    plt.ylabel('Precision')
+    plt.legend(loc='upper right')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    out_path = OUT_DIR / "precision_recall_curve.png"
+    plt.savefig(out_path)
+    print(f"Saved precision-recall curve to: {out_path}")
+    plt.close()
+
+
 plot_loss(history)
-plot_error_distribution(test_errors, y_test, threshold)
-plot_per_attack_recall(per_attack_results)
+plot_error_distribution(test_errors, y_test, threshold, best_f1_threshold)
+plot_per_attack_recall(per_attack_results_optimal)
+plot_roc_curve(fpr, tpr, auc_score)
+plot_precision_recall_curve(precisions, recalls, best_f1, best_f1_idx)
 
 print("\n" + "=" * 50)
 print("DONE — All outputs saved to 'models/autoencoder/'")
