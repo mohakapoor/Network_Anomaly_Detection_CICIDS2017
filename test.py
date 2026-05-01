@@ -1,4 +1,3 @@
-import polars as pl
-
-df = pl.read_parquet(r'unscaled_test.parquet')
-print(df["Attack"].value_counts())
+from scapy.all import rdpcap
+packets = rdpcap("raw\Friday-WorkingHours.pcap")
+print(packets[0].time)  # unix timestamp
