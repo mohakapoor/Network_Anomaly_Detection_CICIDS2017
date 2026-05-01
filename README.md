@@ -143,6 +143,22 @@ The **detection engine** of a Network Intrusion Detection System (IDS), built us
 
 The autoencoder is the preferred anomaly detector due to higher AUC and better detection of subtle attacks. See [project_details.md](project_details.md) for full analysis.
 
+## Model Explainability (SHAP)
+
+To achieve transparency and institutional-grade trust in the detection engine, SHAP (SHapley Additive exPlanations) was used to extract feature importance directly from the trained models.
+
+### Supervised Models (PCA-Transformed Features)
+The supervised models (LightGBM, XGBoost, FFNN) were trained on PCA-reduced data (34 components). The SHAP analysis revealed the most critical components for attack classification:
+- **LightGBM & XGBoost**: Strongly relied on **PC3** (driven by `Fwd IAT Min`, `Bwd IAT Min`, `Bwd IAT Mean`) and **PC1** (driven by `Flow IAT Max`, `Idle Max`). This indicates tree-based models heavily utilize packet timing and inter-arrival time (IAT) anomalies to separate attacks like DoS and Botnet traffic from benign flows.
+- **FFNN**: Prioritized **PC1**, **PC7** (driven by `Active Mean`, `Active Max`), and **PC5** (driven by `ACK Flag Count`, `Min Packet Length`).
+
+### Unsupervised Models (Raw Features)
+The anomaly detectors (Autoencoder, Isolation Forest) were trained directly on the 69 scaled raw features to isolate deviations.
+- **Isolation Forest**: Flagged anomalies primarily based on **PSH Flag Count**, **URG Flag Count**, and **Bwd Packet Length Std**.
+- **Autoencoder**: MSE reconstruction error was most heavily dominated by **URG Flag Count**, **ACK Flag Count**, and **PSH Flag Count**.
+
+Overall, the SHAP analysis mathematically confirms that network flags (URG, ACK, PSH) and inter-arrival timing (IAT) variances are the fundamental indicators distinguishing intrusive behavior within the CICIDS2017 dataset.
+
 ## Requirements
 
 ```
