@@ -1,0 +1,71 @@
+SHAP Feature Importance (Mean Absolute SHAP Value)
+==================================================
+PSH Flag Count: 0.263505
+URG Flag Count: 0.212149
+Bwd Packet Length Std: 0.199398
+Bwd Packet Length Max: 0.178683
+Packet Length Variance: 0.167954
+Bwd Packet Length Mean: 0.147769
+Packet Length Std: 0.137461
+Max Packet Length: 0.129164
+Avg Bwd Segment Size: 0.125900
+ACK Flag Count: 0.121810
+Down/Up Ratio: 0.116634
+Destination Port: 0.113053
+Average Packet Size: 0.108903
+Bwd IAT Total: 0.101308
+Packet Length Mean: 0.093049
+Flow IAT Max: 0.090380
+Fwd IAT Total: 0.087640
+Flow IAT Std: 0.085536
+Fwd PSH Flags: 0.083460
+Fwd IAT Max: 0.080957
+Init_Win_bytes_forward: 0.080069
+Idle Mean: 0.078475
+Idle Max: 0.078394
+Init_Win_bytes_backward: 0.077562
+Idle Std: 0.076296
+Bwd Packet Length Min: 0.073455
+SYN Flag Count: 0.072489
+Flow Duration: 0.072074
+Fwd IAT Std: 0.071514
+Total Length of Bwd Packets: 0.069711
+Fwd IAT Mean: 0.068727
+Bwd IAT Std: 0.062259
+Fwd Packet Length Mean: 0.060974
+Fwd Packet Length Max: 0.060873
+Bwd IAT Mean: 0.060181
+Idle Min: 0.055292
+act_data_pkt_fwd: 0.049320
+Flow Packets/s: 0.047083
+Fwd Packet Length Min: 0.043369
+Subflow Bwd Bytes: 0.043291
+Avg Fwd Segment Size: 0.042311
+Fwd Packets/s: 0.041335
+Flow IAT Mean: 0.041215
+Subflow Bwd Packets: 0.037746
+Bwd IAT Max: 0.037172
+Total Fwd Packets: 0.036692
+Total Backward Packets: 0.036414
+Total Length of Fwd Packets: 0.035247
+Fwd Packet Length Std: 0.032230
+Bwd Packets/s: 0.031705
+FIN Flag Count: 0.031132
+Bwd IAT Min: 0.030986
+Min Packet Length: 0.030931
+Active Min: 0.029661
+Subflow Fwd Bytes: 0.027819
+Active Mean: 0.025742
+Fwd Header Length: 0.025349
+Bwd Header Length: 0.025347
+Flow IAT Min: 0.023749
+Active Max: 0.022603
+Fwd IAT Min: 0.019467
+min_seg_size_forward: 0.019224
+Active Std: 0.018630
+Subflow Fwd Packets: 0.018105
+Flow Bytes/s: 0.016858
+ECE Flag Count: 0.000783
+RST Flag Count: 0.000712
+CWE Flag Count: 0.000107
+Fwd URG Flags: 0.000000
