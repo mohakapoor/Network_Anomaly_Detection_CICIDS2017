@@ -77,7 +77,7 @@ For detailed research methodology, data cleaning steps, and model hyper-paramete
 
 ## Resources
 
--   **Research Deep-Dive**: [docs/documentations.md](docs/documentations.md)
+-   **Project Details**: [docs/documentations.md](docs/documentations.md)
 -   **Production Backend**: [GitHub: IntrusionBackend](https://github.com/mohakapoor/IntrusionBackend)
 -   **Live Application**: [mohakapoor.in/projects/IntrusionDetection](https://www.mohakapoor.in/projects/IntrusionDetection)
 
