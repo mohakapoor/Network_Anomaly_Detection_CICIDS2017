@@ -1,6 +1,22 @@
 # Intrusion Tracker: Full System Documentation
 ## Technical Specifications for Network Anomaly Detection (CICIDS2017)
 
+```
+┌──────────────────────── Intrusion Detection System ────────────────────────┐
+│                                                                            │
+│   Data Capture          Detection Engine           Response & Alerting     │
+│   ┌──────────┐          ┌──────────────┐           ┌─────────────┐         │
+│   │ Sniffing │    →     │ This Project │     →     │  Logging    │         │
+│   │ Flow     │          │              │           │  Blocking   │         │
+│   │ Export   │          │ • Supervised │           │  Dashboard  │         │
+│   │ Parsing  │          │ • Anomaly    │           │  SIEM       │         │
+│   └──────────┘          └──────────────┘           └─────────────┘         │
+│                                                                            │
+│   (CICIDS2017 provides                                                     │
+│    pre-extracted flows)                                                    │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## 1. Project Overview
