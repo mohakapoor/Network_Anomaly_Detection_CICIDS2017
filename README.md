@@ -20,11 +20,11 @@
 
 ---
 
-## 🚀 Overview
+## Overview
 
 **Intrusion Tracker** is a state-of-the-art Network Intrusion Detection System (NIDS) designed to identify and classify cyber threats in real-time. By implementing a **Hierarchical Hybrid Pipeline**, it combines the surgical precision of **Supervised Signatures** (LightGBM/FFNN) with the zero-day sensitivity of **Unsupervised Anomaly Detection** (Denoising Autoencoders).
 
-### 🛠️ Key Features
+### Key Features
 
 -   **Dual-Pronged Detection**: Concurrent signature-based and anomaly-based engines for defense-in-depth (**Hybrid-NIDS**).
 -   **Modern Infrastructure**: Built on **FastAPI**, leveraging Pydantic v2 for ultra-low latency data validation and high-throughput flow processing.
@@ -35,7 +35,7 @@
 
 ---
 
-## 📊 Performance at a Glance
+## Performance Metrics
 
 | Metric | Autoencoder (Anomaly) | LightGBM (Signature) |
 | :--- | :--- | :--- |
@@ -46,7 +46,7 @@
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 1.  **Ingestion**: Raw PCAP or CICIDS flow data.
 2.  **Detection Layer**: Denoising Autoencoder & Isolation Forest flag deviations from the benign baseline.
@@ -55,7 +55,7 @@
 
 ---
 
-## 🚦 Quick Start
+## Quick Start
 
 ### 1. Prerequisites
 - Python 3.9+
@@ -75,7 +75,7 @@ For detailed research methodology, data cleaning steps, and model hyper-paramete
 
 ---
 
-## 📑 Resources
+## Resources
 
 -   **Research Deep-Dive**: [docs/documentations.md](docs/documentations.md)
 -   **Production Backend**: [GitHub: IntrusionBackend](https://github.com/mohakapoor/IntrusionBackend)
