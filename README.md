@@ -1,14 +1,18 @@
 <div align="center">
 
-![Intrusion Tracker Banner](nids_banner.png)
-
 # Intrusion Tracker: Network Anomaly Detection
 ### Bridging Research and Production for Next-Gen Network Security
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License: Research](https://img.shields.io/badge/License-Research-green.svg)](LICENSE)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-05998b.svg)](https://fastapi.tiangolo.com/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
+[![Dataset: CICIDS2017](https://img.shields.io/badge/Dataset-CICIDS2017-lightgrey.svg)](https://www.unb.ca/cic/datasets/ids-2017.html)
+[![Architecture: ARM64](https://img.shields.io/badge/Architecture-ARM64-orange.svg)](#)
+[![Model: LightGBM](https://img.shields.io/badge/Model-LightGBM-336791.svg)](#)
+[![Model: XGBoost](https://img.shields.io/badge/Model-XGBoost-orange.svg)](#)
+[![Model: Autoencoder](https://img.shields.io/badge/Model-Autoencoder-magenta.svg)](#)
+[![Model: Isolation Forest](https://img.shields.io/badge/Model-Isolation--Forest-purple.svg)](#)
+[![Sklearn: Scikit--Learn](https://img.shields.io/badge/Sklearn-Scikit--Learn-F7931E.svg)](https://scikit-learn.org/)
 
 [**Live Demo**](https://www.mohakapoor.in/projects/IntrusionDetection) | [**Backend Repo**](https://github.com/mohakapoor/IntrusionBackend) | [**Full Documentation**](docs/documentations.md)
 
@@ -22,7 +26,8 @@
 
 ### 🛠️ Key Features
 
--   **Dual-Pronged Detection**: Concurrent signature-based and anomaly-based engines for defense-in-depth.
+-   **Dual-Pronged Detection**: Concurrent signature-based and anomaly-based engines for defense-in-depth (**Hybrid-NIDS**).
+-   **Modern Infrastructure**: Built on **FastAPI**, leveraging Pydantic v2 for ultra-low latency data validation and high-throughput flow processing.
 -   **The "LGBM Veto"**: A unique hierarchical logic that utilizes a high-precision classifier to validate anomalies, significantly reducing false positives.
 -   **Edge-Optimized**: Designed for efficiency—while trained on GPUs, the inference engine is optimized for **ARM architectures** without requiring hardware acceleration.
 -   **SHAP-Validated**: Institutional-grade transparency with feature importance confirmed via SHAP analysis.
