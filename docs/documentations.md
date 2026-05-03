@@ -6,6 +6,8 @@
 ## 1. Project Overview
 The **Intrusion Tracker** is an advanced Network Intrusion Detection System (NIDS) developed to integrate academic machine learning research with production-grade security infrastructure. The system utilizes high-fidelity supervised classification for known signatures and unsupervised anomaly detection for zero-day threat identification, providing a comprehensive defense-in-depth architecture.
 
+A core objective of this project is to democratize high-performance network security by ensuring that advanced detection capabilities remain accessible and deployable on resource-constrained hardware. By prioritizing architectural efficiency, the system facilitates deployment in diverse operational environments, ranging from centralized servers to decentralized edge nodes.
+
 ---
 
 ## 2. Hybrid Detection Architecture
@@ -123,18 +125,21 @@ The backend utilizes `pcap_to_cicids.py` for real-time feature extraction, enabl
 ├── scalers/                  # Transformation Models (PCA, Scalers)
 ├── final/                    # Processed Parquet Datasets
 ├── router.py                 # FastAPI Gateway
-└── predict.py                # Inference Logic
+└── predict.py                # Inference Engine
 ```
 
 ---
 
 ## 9. Deployment Guidelines
 
-### Infrastructure Requirements
-- Python 3.9+
-- NVIDIA GPU with CUDA support (recommended for Deep Learning inference)
+### 9.1 Edge-Optimized Inference
+While the models were trained utilizing high-performance GPU acceleration to handle the large-scale CICIDS2017 dataset, the resulting inference engine is optimized for cross-platform compatibility. The system is specifically engineered to run efficiently on **ARM architectures without hardware acceleration**, allowing for seamless deployment on decentralized edge hardware. This versatility ensures that the Intrusion Tracker can provide localized security without requiring specialized data center infrastructure.
 
-### Execution
+### 9.2 Infrastructure Requirements
+- Python 3.9+
+- Compatible with ARM64 and x86_64 architectures (No GPU required for inference).
+
+### 9.3 Execution
 1.  Install dependencies: `pip install -r requirements.txt`.
 2.  Configure `.env` environment variables with model and scaler paths.
 3.  Launch the gateway: `python router.py`.
