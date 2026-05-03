@@ -135,7 +135,7 @@ The backend utilizes `pcap_to_cicids.py` for real-time feature extraction, enabl
 
 ## 8. Directory Structure
 ```text
-├── docs/                     # Technical Documentation
+├── docs/                     # Technical Docs (documentations, viva, project_details, etc.)
 ├── training_scripts/         # Development Notebooks & Scripts
 ├── models/                   # Serialized Weights (.joblib, .pth)
 ├── scalers/                  # Transformation Models (PCA, Scalers)
