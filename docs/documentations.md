@@ -143,3 +143,11 @@ While the models were trained utilizing high-performance GPU acceleration to han
 1.  Install dependencies: `pip install -r requirements.txt`.
 2.  Configure `.env` environment variables with model and scaler paths.
 3.  Launch the gateway: `python router.py`.
+
+---
+
+## 10. External Resources and Repositories
+
+-   **Live Application**: [Intrusion Tracker Project](https://www.mohakapoor.in/projects/IntrusionDetection)
+-   **Backend Repository**: [IntrusionBackend GitHub](https://github.com/mohakapoor/IntrusionBackend)
+-   **Research & Training Repository**: [Current Project Repository](https://github.com/mohakapoor/Network_Anomaly_Detection_CICIDS2017)
