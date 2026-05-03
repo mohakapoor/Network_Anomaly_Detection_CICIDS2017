@@ -45,13 +45,16 @@ A **Temporal Split** is utilized to simulate realistic operational scenarios, av
 -   **Training Dataset (Monday–Thursday)**: Establishes the baseline for benign activity and provides signatures for DoS and Brute Force attacks.
 -   **Testing Dataset (Friday)**: Evaluates the system against **Unseen Zero-Day Attacks**, including Botnets, DDoS, and PortScans.
 
-| Day | Traffic Category | System Role |
-| :--- | :--- | :--- |
-| Monday | Benign | Baseline Anomaly Profiling |
-| Tuesday | FTP/SSH Brute Force | Supervised Signature Training |
-| Wednesday | DoS (Hulk, Slowloris, etc.) | Supervised Signature Training |
-| Thursday | Web Attacks, Infiltration | Supervised Signature Training |
-| **Friday** | **Botnet, DDoS, PortScan** | **Zero-Day Evaluation** |
+### 3.2 Attack Category Mapping
+| ID | Category | Training Distribution | Test Distribution |
+| :--- | :--- | :--- | :--- |
+| 0 | **BENIGN** | 1,720,966 (87.1%) | 395,106 |
+| 1 | **Bot** | - | 981 (Friday only) |
+| 2 | **Brute Force** | 29,999 | - |
+| 3 | **DDoS** | - | 98,022 (Friday only) |
+| 4 | **DoS** | 189,135 | - |
+| 5 | **PortScan** | 7,417 | 79,290 |
+| 6 | **Web Attack** | 25,501 | - |
 
 ---
 
@@ -59,7 +62,7 @@ A **Temporal Split** is utilized to simulate realistic operational scenarios, av
 
 ### Stage 1: Data Consolidation (`split.ipynb`)
 -   Raw CSV files are merged, and column headers are sanitized to remove whitespace.
--   Rare attack labels are consolidated into a standardized "Other Attacks" category.
+-   Rare attack labels (e.g., Infiltration) are consolidated into a standardized "Other Attacks" category.
 -   Data is partitioned into `train_final.parquet` and `test_final.parquet`.
 
 ### Stage 2: Numerical Sanitization (`cleaning.ipynb`)
@@ -79,41 +82,64 @@ The system maintains dual feature pipelines optimized for specific model require
 ## 5. Machine Learning Model Specifications
 
 ### 5.1 Supervised Layer (Signature Identification)
-Trained on PCA-transformed components to identify established attack patterns.
+All supervised models are trained on the 34 PCA-transformed components.
 
-| Model | Architecture | Accuracy (Test) |
-| :--- | :--- | :--- |
-| **LightGBM** | Leaf-wise Gradient Boosting | **99%** |
-| **FFNN** | PyTorch Multi-layer Perceptron | 98% |
-| **XGBoost** | Level-wise Gradient Boosting | 97% |
-| **Binary SVM** | GPU-accelerated Linear Classifier | 96.7% |
+#### **Detailed Performance Matrix**
+| Model | Accuracy | F1 (Weighted) | F1 (Macro) |
+| :--- | :--- | :--- | :--- |
+| **LightGBM** | **0.99** | **0.99** | **0.98** |
+| **FFNN** | 0.98 | 0.98 | 0.96 |
+| **XGBoost** | 0.97 | 0.98 | 0.96 |
+| **Binary SVM** | 96.7% | - | - |
+
+#### **Per-Class Recall Analysis (LightGBM)**
+| Category | Precision | Recall | F1-Score |
+| :--- | :--- | :--- | :--- |
+| BENIGN | 0.98 | 0.96 | 0.97 |
+| Bot | 0.88 | 0.99 | 0.93 |
+| Brute Force | 0.99 | 0.99 | 0.99 |
+| DDoS | 1.00 | 1.00 | 1.00 |
+| DoS | 0.99 | 0.98 | 0.99 |
+| PortScan | 1.00 | 1.00 | 1.00 |
+| Web Attack | 0.95 | 0.99 | 0.97 |
+
+---
 
 ### 5.2 Unsupervised Layer (Anomaly Detection)
 Trained exclusively on benign Monday traffic to establish a baseline for "Normal" network behavior.
 
-#### **Denoising Autoencoder**
--   **Structure**: 69 → 128 → 64 → **16 (Bottleneck)** → 64 → 128 → 69.
--   **Error Metric**: Hybrid MSE + Max Per-Feature Deviation.
--   **Key Finding**: Successfully identified **Botnet** traffic with **73.5% recall**, significantly outperforming traditional statistical methods.
+#### **Denoising Autoencoder Evolution**
+The anomaly detection engine underwent three primary iterations to achieve optimal performance:
+1.  **Baseline (MSE Only)**: Detected high-volume attacks (DDoS) but struggled with subtle patterns (Bot ~2.5% recall).
+2.  **Denoising Integration**: Added 10% Gaussian noise during training to force the model to learn structural benign manifolds rather than memorizing values.
+3.  **Hybrid Error Metric**: Implemented a **0.5 × MSE + 0.5 × Max Per-Feature Error** loss function. This modification significantly improved PortScan detection by identifying extreme deviations in individual features (e.g., specific flag counts).
 
-#### **Isolation Forest**
--   **Methodology**: Recursive partitioning to isolate anomalous observations.
--   **Result**: Exceptional performance in detecting **PortScans** (**99.3% recall**).
+#### **Comparative Unsupervised Results**
+| Metric | Autoencoder | Isolation Forest | Winner |
+| :--- | :--- | :--- | :--- |
+| **ROC AUC** | **0.7801** | 0.7156 | **AE** |
+| **F1 (Anomaly)** | **0.66** | 0.63 | **AE** |
+| Bot Recall | **73.5%** | 39.3% | **AE** |
+| PortScan Recall | 96.6% | **99.3%** | **IF** |
+
+#### **Statistical Metrics: ROC AUC vs. Fixed Thresholds**
+Unlike supervised classifiers, the anomaly engine outputs a continuous reconstruction error. Fixed threshold strategies (e.g., mean + 3×std) often provide misleading performance snapshots:
+-   **Why ROC AUC?**: It evaluates the model's ability to separate benign from attack traffic across *all possible thresholds*. An AUC of 0.7801 indicates that the model assigns higher error to attacks than to benign samples 78% of the time.
+-   **Threshold Sensitivity**: A conservative threshold (mean + 3×std) catches only 31% of attacks. Conversely, the **F1-optimal threshold** (0.001068) catches **89% of attacks**, albeit with a 37% false positive rate—making it a workable first-pass filter for the hybrid pipeline.
 
 ---
 
 ## 6. Explainability and SHAP Analysis
-To ensure institutional-grade transparency, SHAP (SHapley Additive exPlanations) analysis was conducted to determine the mathematical drivers behind model decisions.
+SHAP analysis was conducted to ensure institutional-grade transparency and to identify the mathematical drivers behind model decisions.
 
 ### 6.1 Feature Importance Results
 The analysis identified specific network indicators that serve as primary drivers for intrusion detection:
 
 | Model Category | Primary SHAP Features / Components | Detection Indicator |
 | :--- | :--- | :--- |
-| **Tree Models (LGBM/XGB)** | **PC3**, **PC1** | Timing (IAT) and Idle Time variances. |
-| **Neural Networks (FFNN)** | **PC1**, **PC7**, **PC5** | Active flow duration and Flag counts. |
-| **Autoencoder (Anomaly)** | **URG**, **ACK**, **PSH** Flags | Structural deviations in packet headers. |
-| **Isolation Forest** | **PSH** Flag Count, **Bwd Pkt Len Std** | Structural isolation of scanning traffic. |
+| **Tree Models** | **PC3**, **PC1** | Timing (IAT) and Idle Time variances. |
+| **Neural Networks**| **PC1**, **PC7**, **PC5** | Active flow duration and Flag counts. |
+| **Autoencoder** | **URG**, **ACK**, **PSH** Flags | Structural deviations in packet headers. |
 
 ### 6.2 Technical Conclusion
 SHAP results mathematically confirm that **Packet Flags** (URG, ACK, PSH) and **Inter-Arrival Timing (IAT)** variances are the fundamental indicators distinguishing malicious intent within the CICIDS2017 dataset.
@@ -140,6 +166,7 @@ The backend utilizes `pcap_to_cicids.py` for real-time feature extraction, enabl
 ├── models/                   # Serialized Weights (.joblib, .pth)
 ├── scalers/                  # Transformation Models (PCA, Scalers)
 ├── final/                    # Processed Parquet Datasets
+├── raw/                      # Raw CICIDS2017 CSV source
 ├── router.py                 # FastAPI Gateway
 └── predict.py                # Inference Engine
 ```
@@ -162,8 +189,28 @@ While the models were trained utilizing high-performance GPU acceleration to han
 
 ---
 
-## 10. External Resources and Repositories
+## 10. Appendix: Hyperparameter Configurations
 
+### 10.1 Supervised Tuning (RandomizedSearchCV)
+| Model | Key Parameters | Search Range |
+| :--- | :--- | :--- |
+| **LightGBM** | `num_leaves` | [20, 31, 50] |
+| | `learning_rate` | loguniform(0.01, 0.2) |
+| | `n_estimators` | [5, 10] |
+| **XGBoost** | `max_depth` | [6, 8, 10] |
+| | `min_child_weight` | [10, 30, 50] |
+
+### 10.2 Unsupervised Tuning
+| Model | Key Parameters | Selection |
+| :--- | :--- | :--- |
+| **Autoencoder** | `bottleneck` | 16 |
+| | `optimizer` | Adam (lr=1e-3, weight_decay=1e-5) |
+| **Isolation Forest** | `max_samples` | 2048 |
+| | `n_estimators` | 200 |
+
+---
+
+## 11. External Resources and Repositories
 -   **Live Application**: [Intrusion Tracker Project](https://www.mohakapoor.in/projects/IntrusionDetection)
 -   **Backend Repository**: [IntrusionBackend GitHub](https://github.com/mohakapoor/IntrusionBackend)
--   **Research & Training Repository**: [Current Project Repository](https://github.com/mohakapoor/Network_Anomaly_Detection_CICIDS2017)
+-   **Research & Training Repository**: [Network Anomaly Detection GitHub](https://github.com/mohakapoor/Network_Anomaly_Detection_CICIDS2017)
