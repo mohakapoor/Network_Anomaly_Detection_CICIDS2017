@@ -31,7 +31,7 @@ Conventional IDS implementations typically rely on one of two paradigms, both of
 1.  **Signature-based Detection**: High precision for known attacks but incapable of identifying zero-day threats.
 2.  **Anomaly-based Detection**: Capable of detecting novel attacks but prone to high False Positive Rates (FPR).
 
-**The Hierarchical Solution**: This system implements a **Hierarchical Hybrid Pipeline** designed to maximize detection coverage while minimizing operational noise.
+**The Hierarchical Solution**: This system implements a **Hierarchical Hybrid Pipeline** (Hybrid-NIDS) designed to maximize detection coverage while minimizing operational noise. By combining signature-based and anomaly-based paradigms, the architecture can detect established threats with 99% precision while remaining sensitive to novel zero-day exploits.
 -   **Detection Phase**: Sensitive unsupervised models (**Denoising Autoencoder** and **Isolation Forest**) monitor for statistical deviations.
 -   **Validation Phase**: Flagged anomalies are subjected to a high-precision supervised model (**LightGBM**). If the supervised layer classifies the traffic as benign, the alert is suppressed via a "Veto" mechanism.
 
