@@ -81,15 +81,12 @@ print("Tuning complete.")
 
 
 best_params = random_search.best_params_
-print("\n=============================================")
 print("Best Hyperparameters Found:")
 print(best_params)
 
 # Get the best score achieved
 best_score = random_search.best_score_
 print(f"\nBest Mean F1-Score (macro) from CV: {best_score:.4f}")
-print("=============================================")
-
 best = random_search.best_estimator_
 
 joblib.dump(best, OUT_FILE)
