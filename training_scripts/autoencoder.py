@@ -18,14 +18,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# ── Paths ──────────────────────────────────────────────────────
+# Paths
 TRAIN_PATH = Path(r"final\train_us.parquet")
 TEST_PATH  = Path(r"final\test_us.parquet")
 OUT_DIR    = Path("models/autoencoder")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 MODEL_OUT  = OUT_DIR / "autoencoder_model.pth"
 
-# ── Hyperparameters ────────────────────────────────────────────
+# Hyperparameters
 SEED       = 42
 BATCH_SIZE = 256
 LR         = 1e-3
@@ -40,7 +40,7 @@ USE_GPU = torch.cuda.is_available()
 DEVICE  = torch.device("cuda" if USE_GPU else "cpu")
 
 
-# ── Seed ───────────────────────────────────────────────────────
+# Seed
 def set_seed(s=SEED):
     random.seed(s)
     np.random.seed(s)
@@ -51,9 +51,7 @@ def set_seed(s=SEED):
 set_seed()
 
 
-# ══════════════════════════════════════════════════════════════
-#  1. DATA LOADING
-# ══════════════════════════════════════════════════════════════
+# DATA LOADING
 print("=" * 50)
 print("LOADING DATA")
 print("=" * 50)
@@ -79,10 +77,7 @@ y_test = test_df['Attack'].values
 NUM_FEATURES = X_train.shape[1]
 print(f"Number of features: {NUM_FEATURES}")
 
-
-# ══════════════════════════════════════════════════════════════
-#  2. PYTORCH DATASET
-# ══════════════════════════════════════════════════════════════
+#  PYTORCH DATASET
 class AEDataset(Dataset):
     """Dataset for autoencoder — returns only X (target is X itself)."""
     def __init__(self, X):
@@ -106,7 +101,6 @@ val_loader   = DataLoader(val_ds,  batch_size=BATCH_SIZE, shuffle=False,
                           num_workers=NUM_WORKERS, pin_memory=True)
 test_loader  = DataLoader(test_ds, batch_size=BATCH_SIZE, shuffle=False,
                           num_workers=NUM_WORKERS, pin_memory=True)
-
 
 
 class Autoencoder(nn.Module):
@@ -153,10 +147,7 @@ model = Autoencoder(NUM_FEATURES).to(DEVICE)
 print(f"\nModel on: {DEVICE}")
 print(model)
 
-
-# ══════════════════════════════════════════════════════════════
-#  4. TRAINING
-# ══════════════════════════════════════════════════════════════
+# TRAINING
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-5)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -233,10 +224,7 @@ for epoch in range(1, EPOCHS + 1):
 model.load_state_dict(torch.load(MODEL_OUT, weights_only=True))
 print(f"\nLoaded best model from {MODEL_OUT}")
 
-
-# ══════════════════════════════════════════════════════════════
-#  5. THRESHOLD COMPUTATION
-# ══════════════════════════════════════════════════════════════
+#  THRESHOLD COMPUTATION
 print("\n" + "=" * 50)
 print("COMPUTING THRESHOLD")
 print("=" * 50)
@@ -281,10 +269,7 @@ with open(OUT_DIR / "threshold.txt", "w") as f:
     f.write(f"threshold (99th percentile): {threshold_99:.6f}\n")
 print(f"Saved thresholds to {OUT_DIR / 'threshold.txt'}")
 
-
-# ══════════════════════════════════════════════════════════════
-#  6. EVALUATION ON TEST SET
-# ══════════════════════════════════════════════════════════════
+# EVALUATION ON TEST SET
 print("\n" + "=" * 50)
 print("EVALUATING ON TEST SET")
 print("=" * 50)
@@ -332,9 +317,7 @@ for attack_id in sorted(test_df['Attack'].unique()):
 
 
 
-# ══════════════════════════════════════════════════════════════
-#  6b. ROC AUC ANALYSIS & OPTIMAL THRESHOLD
-# ══════════════════════════════════════════════════════════════
+# ROC AUC ANALYSIS & OPTIMAL THRESHOLD
 print("\n" + "=" * 50)
 print("ROC AUC ANALYSIS")
 print("=" * 50)
@@ -417,10 +400,7 @@ with open(OUT_DIR / "threshold.txt", "a") as f:
     f.write(f"F1-optimal precision: {precisions[best_f1_idx]:.4f}\n")
     f.write(f"F1-optimal recall: {recalls[best_f1_idx]:.4f}\n")
 
-
-# ══════════════════════════════════════════════════════════════
-#  7. PLOTS
-# ══════════════════════════════════════════════════════════════
+# PLOTS
 print("\n" + "=" * 50)
 print("GENERATING PLOTS")
 print("=" * 50)
